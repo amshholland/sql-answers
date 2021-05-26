@@ -16,14 +16,15 @@ SELECT * FROM customers
     WHERE postal_code IN ('1010', '3012', '12209', '05023');
 
 -- 6. Get all orders where the ShipRegion is not equal to NULL.
+-- NULL IS A KEYWORD, KEEP IT UPPERCASE
 SELECT * FROM orders 
-    WHERE ship_region IS NOT null;
+    WHERE ship_region IS NOT NULL;
 
 -- 7. Get all customers ordered by the country, then by the city.
 SELECT * FROM orders 
     ORDER BY ship_country, ship_city;
 
--- 8. Add a new customer to the customers table. You can use whatever values/
+-- 8. Add a new customer to the customers table. You can use whatever values
 INSERT INTO customers (customer_id, company_name, contact_name, contact_title, 
     address, city, region, postal_code, country, phone, fax)
     VALUES (69, 'Dunder Mifflin', 'Kevin Malone', 'Accountant', '1725 Slough Avenue', 'Scranton', 
@@ -39,7 +40,8 @@ DELETE FROM order_details
 	WHERE quantity=1;
 
 -- 11. Calculate the average, max, and min of the quantity at the `order details` table.
-SELECT AVG(quantity) AS average, MAX(quantity) AS max, MIN(quantity) AS min 
+-- COMMON PRACTICE TO INCLUDE WHAT YOU'RE GROUPING BY (ORDER_ID IN THIS CASE)
+SELECT AVG(quantity) AS average, MAX(quantity) AS max, MIN(quantity) AS min, order_id
     FROM order_details;
 
 -- 12. Calculate the average, max, and min of the quantity at the `order details` table, grouped by the orderid. 
@@ -72,14 +74,16 @@ ON employees.city = 'London';
 -- discontinued product. (See orders, order_details, and products. 
 -- 1 means discontinued.)
 SELECT orders.ship_name FROM orders
+JOIN order_details
+ON order_details.order_id = orders.order_id
 JOIN products
-ON products.discontinued = 1;
+ON products.product_id = order_details.product_id
+WHERE products.discontinued=1;
 
 -- 17. Get first names of all employees who report to no one.
 SELECT first_name FROM employees WHERE reports_to IS null;
 
 -- 18. Get first names of all employees who report to Andrew.
-SELECT * FROM employees AS employee_first_name
-JOIN employee_id employee_id
-ON employee_first_name.first_name = 'Andrew';
+SELECT first_name FROM employees 
+WHERE reports_to = 2;
 
